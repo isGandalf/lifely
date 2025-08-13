@@ -20,3 +20,17 @@ class AddMissionError extends MissionErrors {
 
   AddMissionError({required this.message});
 }
+
+class SaveMissionToLocalError extends MissionErrors {
+  @override
+  final String message;
+
+  SaveMissionToLocalError({required this.message});
+}
+
+class RemoteSyncError extends MissionErrors {
+  @override
+  final String message;
+
+  RemoteSyncError({required this.message});
+}

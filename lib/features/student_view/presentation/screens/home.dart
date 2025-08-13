@@ -25,8 +25,8 @@ class Home extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CurricullamContainer(
-              borderColor: AppColors.containerColorBlue1,
-              fillColor: AppColors.containerColorBlue2,
+              borderColor: AppColors.containerColorBlue2,
+              fillColor: AppColors.containerColorBlue1,
               imageUrl: 'assets/images/student.png',
               curricullamName: 'Alphabets',
             ),
@@ -48,7 +48,12 @@ class Home extends StatelessWidget {
         ),
         const SizedBox(height: 20),
 
-        // Missions
+        /*
+        Missions
+        ====================================
+        This is the only working feature of the app. (Task 1)
+        ====================================
+        */
         const MissionContainer(),
       ],
     );
