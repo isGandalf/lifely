@@ -35,7 +35,7 @@ class NotificationUsecases {
 
   // mark notification as read
   Future<Either<NotificationErrors, void>> markNotificationRead(
-    int notificationId,
+    String notificationId,
   ) async {
     final result = await notificationRepository.markNotificationRead(
       notificationId,
@@ -50,7 +50,7 @@ class NotificationUsecases {
 
   // delete notification
   Future<Either<NotificationErrors, void>> deleteNotification(
-    int notificationId,
+    String notificationId,
   ) async {
     final result = await notificationRepository.deleteNotification(
       notificationId,

@@ -16,10 +16,10 @@ abstract class NotificationRepository {
   Future<Either<NotificationErrors, NotificationEntity>> getOneNotification();
 
   // delete notification
-  Future<Either<NotificationErrors, void>> deleteNotification(int notificationId);
+  Future<Either<NotificationErrors, void>> deleteNotification(String notificationId);
 
   // mark as read notification
-  Future<Either<NotificationErrors, void>> markNotificationRead(int notificationId);
+  Future<Either<NotificationErrors, void>> markNotificationRead(String notificationId);
 }
 
 

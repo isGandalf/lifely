@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lifely/core/theme/app_colors.dart';
+import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:lifely/features/student_view/presentation/bloc/bloc/mission_bloc.dart';
 import 'package:lifely/features/student_view/presentation/screens/mission_item_steps.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -64,11 +65,18 @@ class _MissionListState extends State<MissionList> {
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.read<NotificationBloc>().add(NotificationLoadEvent());
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: BlocBuilder<MissionBloc, MissionState>(
         builder: (context, state) {
           print(state.runtimeType);
-          
+
           if (state is MissionLoadingFailedState) {
             print('Error --> ${state.error}');
             return const Center(child: Text('Failed to fetch missions'));

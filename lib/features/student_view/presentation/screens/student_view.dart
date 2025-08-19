@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter/material.dart';
 import 'package:lifely/core/errors/network_errors.dart';
+import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:lifely/features/student_view/data/source/network_info.dart';
 import 'package:lifely/features/student_view/presentation/bloc/bloc/mission_bloc.dart';
 import 'package:lifely/features/student_view/presentation/screens/enum_pages.dart';
@@ -32,6 +33,16 @@ class _StudentViewState extends State<StudentView> {
     setState(() {
       studentNavPage = page;
     });
+
+    if (studentNavPage == StudentNavPage.home) {
+      context.read<NotificationBloc>().add(NotificationLoadEvent());
+      context.read<MissionBloc>().add(MissionSyncEvent());
+      print('Notifications and sync done');
+    } else if (studentNavPage == StudentNavPage.store) {
+      print('Store');
+    } else if (studentNavPage == StudentNavPage.notifications) {
+      context.read<NotificationBloc>().add(NotificationLoadEvent());
+    }
   }
 
   void _checkInternetConnection() async {
@@ -52,6 +63,7 @@ class _StudentViewState extends State<StudentView> {
     context.read<MissionBloc>().add(
       FetchMissionFromRemoteAndSaveToLocalEvent(),
     );
+    context.read<NotificationBloc>().add(NotificationLoadEvent());
   }
 
   @override

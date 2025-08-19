@@ -27,7 +27,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Either<NotificationErrors, void>> deleteNotification(int notificationId) async {
+  Future<Either<NotificationErrors, void>> deleteNotification(String notificationId) async {
     final result = await localNotificationSource.deleteNotification(notificationId);
     return result.fold(
       ifLeft: (failure) =>
@@ -56,7 +56,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<Either<NotificationErrors, void>> markNotificationRead(int notificationId) async {
+  Future<Either<NotificationErrors, void>> markNotificationRead(String notificationId) async {
     final result = await localNotificationSource.isNotificationRead(notificationId);
     return result.fold(
       ifLeft: (failure) =>

@@ -1,13 +1,25 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lifely/core/theme/theme.dart';
+import 'package:lifely/features/cart/data/model/cart_model.dart';
+import 'package:lifely/features/cart/data/repository/cart_repository_impl.dart';
+import 'package:lifely/features/cart/data/source/cart_source.dart';
+import 'package:lifely/features/cart/domain/usecases/cart_usecases.dart';
+import 'package:lifely/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:lifely/features/langauge/bloc/language_bloc.dart';
 import 'package:lifely/features/notifications/data/models/notification_model.dart';
 import 'package:lifely/features/notifications/data/repository/notification_repository_impl.dart';
 import 'package:lifely/features/notifications/data/source/local_notification_service.dart';
 import 'package:lifely/features/notifications/data/source/local_notification_source.dart';
 import 'package:lifely/features/notifications/domain/usecases/notification_usecases.dart';
 import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:lifely/features/rewards/data/model/rewards_model.dart';
+import 'package:lifely/features/rewards/data/repository/rewards_repository_impl.dart';
+import 'package:lifely/features/rewards/data/source/rewards_source.dart';
+import 'package:lifely/features/rewards/domain/usecases/rewards_usecases.dart';
+import 'package:lifely/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:lifely/features/student_view/data/model/mission_model.dart';
 import 'package:lifely/features/student_view/data/repository/missions_data_repository.dart';
 import 'package:lifely/features/student_view/data/source/local.dart';
@@ -18,10 +30,19 @@ import 'package:lifely/features/student_view/domain/repository/missions_domain_r
 import 'package:lifely/features/student_view/domain/usecases/mission_usecases.dart';
 import 'package:lifely/features/student_view/presentation/bloc/bloc/mission_bloc.dart';
 import 'package:lifely/features/student_view/presentation/screens/student_view.dart';
+import 'package:lifely/features/teacher_view/data/model/products_model.dart';
+import 'package:lifely/features/teacher_view/data/repository/products_repository_impl.dart';
+import 'package:lifely/features/teacher_view/data/source/datasources.dart';
+import 'package:lifely/features/teacher_view/domain/repository/products_repository.dart';
+import 'package:lifely/features/teacher_view/domain/usecases/product_usecases.dart';
+import 'package:lifely/features/teacher_view/presentation/bloc/products_bloc.dart';
+import 'package:lifely/features/teacher_view/presentation/screens/teacher_view.dart';
+import 'package:lifely/l10n/app_localizations.dart';
 import 'package:lifely/splash_screen.dart/splash_screen.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +55,8 @@ void main() async {
   final isarDb = await Isar.open([
     MissionModelSchema,
     NotificationModelSchema,
+    CartModelSchema,
+    ProductsModelSchema,
   ], directory: directory.path);
 
   final MissionLocalSource missionLocalSource = MissionLocalSource(db: isarDb);
@@ -65,6 +88,30 @@ void main() async {
   final LocalNotificationService localNotificationService =
       LocalNotificationService();
 
+  final MissionBloc missionBloc = MissionBloc(
+    missionUsecases,
+    networkInfo,
+    notificationUsecases,
+    localNotificationService,
+  );
+
+  final productDatasources = Datasources();
+  final ProductsRepository productsRepository = ProductsRepositoryImpl(
+    datasources: productDatasources,
+  );
+  final ProductUsecases productUsecases = ProductUsecases(
+    productsRepository: productsRepository,
+  );
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final rewardsSource = RewardsSource(prefs: prefs);
+  final rewardsRepository = RewardsRepositoryImpl(rewardsSource: rewardsSource);
+  final rewardsUsecases = RewardsUsecases(rewardsRepository: rewardsRepository);
+
+  final cartSource = CartSource(isarDb: isarDb);
+  final cartRepository = CartRepositoryImpl(cartSource: cartSource);
+  final cartUsecases = CartUsecases(cartRepository: cartRepository);
+
   // Run app
   runApp(
     MultiProvider(
@@ -81,6 +128,12 @@ void main() async {
           create: (context) =>
               NotificationBloc(notificationUsecases, localNotificationService),
         ),
+        BlocProvider(create: (context) => LanguageBloc(missionBloc)),
+        BlocProvider<ProductsBloc>(
+          create: (context) => ProductsBloc(productUsecases),
+        ),
+        BlocProvider(create: (context) => RewardsBloc(rewardsUsecases)),
+        BlocProvider(create: (context) => CartBloc(cartUsecases)),
       ],
       child: const Lifely(),
     ),
@@ -92,10 +145,27 @@ class Lifely extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: appTheme,
-      home: const SplashScreen(),
+    return BlocBuilder<LanguageBloc, LanguageState>(
+      builder: (context, state) {
+        Locale locale = const Locale('en');
+
+        if (state is LanguageUpdatedState) {
+          locale = state.locale;
+        }
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: appTheme,
+          locale: locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('en'), Locale('hi')],
+          home: const TeacherView(),
+        );
+      },
     );
   }
 }

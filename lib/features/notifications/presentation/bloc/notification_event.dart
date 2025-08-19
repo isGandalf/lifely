@@ -16,13 +16,13 @@ final class NotificationSaveEvent extends NotificationEvent {
 }
 
 final class NotificationMarkAsReadEvent extends NotificationEvent {
-  final int notificationId;
+  final String notificationId;
 
   NotificationMarkAsReadEvent({required this.notificationId});
 }
 
 final class NotificationDeleteEvent extends NotificationEvent {
-  final int notificationId;
+  final String notificationId;
 
   NotificationDeleteEvent({required this.notificationId});
 }

@@ -58,10 +58,13 @@ class LocalNotificationSource {
 
   // update notification - isRead = true
   Future<Either<NotificationErrors, void>> isNotificationRead(
-    int notificationId,
+    String notificationId,
   ) async {
     try {
-      final notification = await db.notificationModels.get(notificationId);
+      final notification = await db.notificationModels
+          .filter()
+          .notificationIdEqualTo(notificationId)
+          .findFirst();
 
       if (notification == null) {
         return Left(
@@ -72,8 +75,9 @@ class LocalNotificationSource {
       }
 
       await db.writeTxn(() async {
-        await db.notificationModels.put(notification.copyWith(
-          isRead: true));
+        await db.notificationModels.put(
+          notification.copyWith(isRead: !notification.isRead),
+        );
       });
 
       return const Right(null);
@@ -95,22 +99,23 @@ class LocalNotificationSource {
 
   // delete notification
   Future<Either<NotificationErrors, void>> deleteNotification(
-    int notificationId,
+    String notificationId,
   ) async {
     try {
-      final notification = await db.notificationModels.get(notificationId);
+      final deletedCount = await db.writeTxn(() async {
+        return await db.notificationModels
+            .filter()
+            .notificationIdEqualTo(notificationId)
+            .deleteAll();
+      });
 
-      if (notification == null) {
+      if (deletedCount == 0) {
         return Left(
           DeleteNotificationError(
             message: 'No notification with the $notificationId found',
           ),
         );
       }
-
-      await db.writeTxn(() async {
-        await db.notificationModels.delete(notificationId);
-      });
 
       return const Right(null);
     } on Exception catch (e) {
