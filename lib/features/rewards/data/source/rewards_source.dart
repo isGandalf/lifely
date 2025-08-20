@@ -1,7 +1,6 @@
 import 'package:dart_either/dart_either.dart';
 import 'package:lifely/core/errors/rewards_errors.dart';
 import 'package:lifely/features/rewards/data/model/rewards_model.dart';
-import 'package:lifely/features/rewards/domain/entity/rewards.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RewardsSource {
@@ -10,6 +9,7 @@ class RewardsSource {
 
   RewardsSource({required this.prefs});
 
+  // get the current rewards
   Either<RewardsErrors, RewardsModel> fetchRewards() {
     try {
       final coins = prefs.getInt(_rewardsKey);
@@ -29,6 +29,7 @@ class RewardsSource {
     }
   }
 
+  // reset reward coins
   Future<Either<RewardsErrors, void>> resetRewards(int coins) async {
     try {
       await prefs.setInt(_rewardsKey, coins);
@@ -42,10 +43,26 @@ class RewardsSource {
     }
   }
 
+  // update rewards when item is added to cart
   Future<Either<RewardsErrors, void>> updateRewards(int coins) async {
     try {
       final currentCoins = prefs.getInt(_rewardsKey) ?? 1500;
       await prefs.setInt(_rewardsKey, currentCoins - coins);
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(RewardsUpdateError(message: 'Failed to update rewards: $e'));
+    } catch (e) {
+      return Left(
+        RewardsUpdateError(message: 'An unexpected error occurred: $e'),
+      );
+    }
+  }
+
+  // update rewards when item is removed from the cart
+  Future<Either<RewardsErrors, void>> updateRewardsAfterRemove(int coins) async {
+    try {
+      final currentCoins = prefs.getInt(_rewardsKey) ?? 1500;
+      await prefs.setInt(_rewardsKey, currentCoins + coins);
       return const Right(null);
     } on Exception catch (e) {
       return Left(RewardsUpdateError(message: 'Failed to update rewards: $e'));

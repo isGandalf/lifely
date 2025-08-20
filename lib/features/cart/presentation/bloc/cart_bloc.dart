@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:lifely/features/cart/data/model/cart_model.dart';
 import 'package:lifely/features/cart/domain/entity/cart.dart';
 import 'package:lifely/features/cart/domain/entity/cart_mapper.dart';
-import 'package:lifely/features/cart/domain/repository/cart_repository.dart';
 import 'package:lifely/features/cart/domain/usecases/cart_usecases.dart';
 import 'package:lifely/features/teacher_view/domain/entity/products.dart';
 import 'package:meta/meta.dart';

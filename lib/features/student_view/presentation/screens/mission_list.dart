@@ -124,7 +124,7 @@ class _MissionListState extends State<MissionList> {
                           vertical: 12,
                         ),
                         width: double.infinity,
-                        height: 140,
+                        height: 150,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(

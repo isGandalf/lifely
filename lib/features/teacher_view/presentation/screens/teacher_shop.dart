@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lifely/core/theme/app_colors.dart';
 import 'package:lifely/features/teacher_view/presentation/widgets/shop_item_list_view.dart';
 import 'package:lifely/features/teacher_view/presentation/widgets/teacher_shop_header.dart';
 

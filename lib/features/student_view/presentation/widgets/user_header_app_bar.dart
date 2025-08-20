@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lifely/core/theme/app_colors.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:lifely/features/login/presentation/screens/login.dart';
 import 'package:lifely/features/notifications/domain/entity/notification_entity.dart';
 import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
-import 'package:lifely/features/notifications/presentation/screens/student_notifications.dart';
+import 'package:lifely/features/notifications/presentation/widgets/extract_mission_name.dart';
+import 'package:lifely/l10n/app_localizations.dart';
 
 class UserHeaderAppBar extends StatelessWidget {
   const UserHeaderAppBar({super.key});
@@ -17,23 +19,57 @@ class UserHeaderAppBar extends StatelessWidget {
         //user image
         Row(
           children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryAppColor, width: 3),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/luffy-student.png'),
-                ),
-                boxShadow: const [
-                  BoxShadow(
-                    spreadRadius: 1,
-                    color: Colors.grey,
-                    blurRadius: 3,
-                    blurStyle: BlurStyle.outer,
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Logout'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                          child: const Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryAppColor,
+                    width: 3,
                   ),
-                ],
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/luffy-student.png'),
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      spreadRadius: 1,
+                      color: Colors.grey,
+                      blurRadius: 3,
+                      blurStyle: BlurStyle.outer,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 15),
@@ -65,6 +101,8 @@ class UserHeaderAppBar extends StatelessWidget {
             if (state is NotificationLoadedState) {
               notificationList = state.notifications
                   .where((noti) => !noti.isRead)
+                  .toList()
+                  .reversed
                   .toList();
 
               notificationCount = notificationList
@@ -138,6 +176,18 @@ class UserHeaderAppBar extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     final notification =
                                         notificationList[index];
+
+                                    final missionName = extractMissionName(
+                                      notification.notificationTitle,
+                                    );
+
+                                    final title = AppLocalizations.of(
+                                      context,
+                                    )!.missionCompletedTitle(missionName);
+
+                                    final description = AppLocalizations.of(
+                                      context,
+                                    )!.missionCompletedDescription;
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 10.0,
@@ -155,15 +205,14 @@ class UserHeaderAppBar extends StatelessWidget {
                                             color: AppColors.primaryAppColor,
                                           ),
                                           title: Text(
-                                            notification.notificationTitle,
+                                            title,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                             ),
                                           ),
                                           subtitle: Text(
-                                            notification
-                                                .notificationDescription,
+                                            description,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w700,
                                               color: Colors.grey,

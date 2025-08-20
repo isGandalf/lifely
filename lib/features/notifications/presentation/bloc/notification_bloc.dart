@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dart_either/dart_either.dart';
 import 'package:flutter/material.dart';
 import 'package:lifely/features/notifications/data/source/local_notification_service.dart';
 import 'package:lifely/features/notifications/domain/entity/notification_entity.dart';

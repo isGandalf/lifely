@@ -59,6 +59,8 @@ dependencies:
   badges: ^3.1.2
   sidebarx: ^0.17.2
   shared_preferences: ^2.5.3
+  dropdown_search: ^6.0.2
+  syncfusion_flutter_charts: ^30.2.6
 
 
 dev_dependencies:

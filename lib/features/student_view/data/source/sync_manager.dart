@@ -1,5 +1,4 @@
 import 'package:dart_either/dart_either.dart';
-import 'package:lifely/core/errors/mission_errors.dart';
 import 'package:lifely/core/errors/network_errors.dart';
 import 'package:lifely/features/student_view/data/source/local.dart';
 import 'package:lifely/features/student_view/data/source/network_info.dart';

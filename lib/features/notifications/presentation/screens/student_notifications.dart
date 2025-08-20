@@ -4,6 +4,8 @@ import 'package:lifely/core/theme/app_colors.dart';
 import 'package:lifely/features/notifications/domain/entity/notification_entity.dart';
 import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:lifely/features/notifications/presentation/screens/language_select.dart';
+import 'package:lifely/features/notifications/presentation/widgets/extract_mission_name.dart';
+import 'package:lifely/l10n/app_localizations.dart';
 
 class StudentNotifications extends StatefulWidget {
   const StudentNotifications({super.key});
@@ -75,6 +77,18 @@ class _StudentNotificationsState extends State<StudentNotifications> {
                   itemBuilder: (context, index) {
                     final notification = notificationList[index];
 
+                    final missionName = extractMissionName(
+                      notification.notificationTitle,
+                    );
+
+                    final title = AppLocalizations.of(
+                      context,
+                    )!.missionCompletedTitle(missionName);
+
+                    final description = AppLocalizations.of(
+                      context,
+                    )!.missionCompletedDescription;
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: InkWell(
@@ -90,20 +104,20 @@ class _StudentNotificationsState extends State<StudentNotifications> {
                           ),
                           leading: Icon(
                             notification.isRead
-                                ? Icons.circle_notifications_outlined
+                                ? Icons.check
                                 : Icons.circle_notifications_sharp,
                             color: AppColors.primaryAppColor,
                             size: 35,
                           ),
                           title: Text(
-                            notification.notificationTitle,
+                            title,
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           subtitle: Text(
-                            notification.notificationDescription,
+                            description,
                             style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
                           trailing: IconButton(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lifely/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:lifely/features/rewards/presentation/bloc/rewards_bloc.dart';
-import 'package:lifely/features/teacher_view/domain/entity/products.dart';
 import 'package:lifely/features/teacher_view/presentation/bloc/products_bloc.dart';
 
 class ShopItemListView extends StatelessWidget {

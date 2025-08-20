@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lifely/core/theme/app_colors.dart';
 import 'package:lifely/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:lifely/features/cart/presentation/screens/checkout.dart';
+import 'package:lifely/features/rewards/domain/entity/rewards.dart';
 import 'package:lifely/features/rewards/presentation/bloc/rewards_bloc.dart';
 
 class CartPage extends StatelessWidget {
@@ -36,7 +37,27 @@ class CartPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
+                          // clear the cart
                           context.read<CartBloc>().add(CartClearEvent());
+
+                          // Also, add the total coins in the cart back to rewards
+                          final currentCartState = context
+                              .read<CartBloc>()
+                              .state;
+                          if (currentCartState is CartLoadedState) {
+                            final totalCoins = currentCartState.cartItems
+                                .fold<int>(
+                                  0,
+                                  (sum, item) => sum + item.productPrice,
+                                );
+                            context.read<RewardsBloc>().add(
+                              ProductItemRemovedFromCartButtonPressedEvent(
+                                coins: totalCoins,
+                              ),
+                            );
+                          }
+
+                          // pop the alert box
                           Navigator.of(context).pop();
                         },
                         child: const Text('Clear'),
@@ -145,6 +166,11 @@ class CartPage extends StatelessWidget {
                                   context.read<CartBloc>().add(
                                     CartDeleteEvent(
                                       productId: cartItem.productId,
+                                    ),
+                                  );
+                                  context.read<RewardsBloc>().add(
+                                    ProductItemRemovedFromCartButtonPressedEvent(
+                                      coins: cartItem.productPrice,
                                     ),
                                   );
                                 },

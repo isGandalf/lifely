@@ -22,3 +22,9 @@ final class ProductItemButtonPressedEvent extends RewardsEvent {
 
   ProductItemButtonPressedEvent({required this.products});
 }
+
+final class ProductItemRemovedFromCartButtonPressedEvent extends RewardsEvent {
+  final int coins;
+
+  ProductItemRemovedFromCartButtonPressedEvent({required this.coins});
+}

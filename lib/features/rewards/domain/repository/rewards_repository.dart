@@ -6,4 +6,5 @@ abstract class RewardsRepository {
   Either<RewardsErrors, Rewards> fetchRewards();
   Future<Either<RewardsErrors, void>> resetRewards(int coins);
   Future<Either<RewardsErrors, void>> updateRewards(int coins);
+  Future<Either<RewardsErrors, void>> updateRewardsAfterRemove(int coins);
 }

@@ -36,4 +36,13 @@ class RewardsRepositoryImpl implements RewardsRepository {
       ifRight: (_) => const Right(null),
     );
   }
+
+  @override
+  Future<Either<RewardsErrors, void>> updateRewardsAfterRemove(int coins) async {
+    final result = await rewardsSource.updateRewardsAfterRemove(coins);
+    return result.fold(
+      ifLeft: (failure) => Left(RewardsUpdateError(message: failure.message)),
+      ifRight: (_) => const Right(null),
+    );
+  }
 }

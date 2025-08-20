@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lifely/core/theme/app_colors.dart';
 import 'package:lifely/features/langauge/bloc/language_bloc.dart';
 import 'package:lifely/features/langauge/model/language_model.dart';
+import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
 
 class LanguageSelect extends StatelessWidget {
   const LanguageSelect({super.key});
@@ -16,6 +17,16 @@ class LanguageSelect extends StatelessWidget {
         title: const Text(
           'Change language',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Trigger bloc event
+            context.read<NotificationBloc>().add(NotificationLoadEvent());
+
+            // navigate back
+            Navigator.pop(context);
+          },
         ),
         backgroundColor: AppColors.scaffoldBackground,
       ),

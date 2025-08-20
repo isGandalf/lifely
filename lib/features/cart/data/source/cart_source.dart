@@ -8,6 +8,7 @@ class CartSource {
 
   CartSource({required this.isarDb});
 
+  // fetch cart
   Future<Either<CartErrors, List<CartModel>>> fetchCartItems() async {
     try {
       final cartItems = await isarDb.cartModels.where().findAll();
@@ -24,6 +25,7 @@ class CartSource {
     }
   }
 
+  // add items to cart
   Future<Either<CartErrors, void>> addCartItem(CartModel cartItem) async {
     try {
       await isarDb.writeTxn(() async {
@@ -40,6 +42,7 @@ class CartSource {
     }
   }
 
+  // delete a cart item
   Future<Either<CartErrors, void>> deleteCartItem(String productId) async {
     try {
       final cartItem = await isarDb.cartModels.get(int.parse(productId));
@@ -64,6 +67,7 @@ class CartSource {
     }
   }
 
+  // clear cart
   Future<Either<CartErrors, void>> clearCart() async {
     try {
       await isarDb.writeTxn(() async {

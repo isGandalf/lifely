@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lifely/features/cart/domain/entity/cart.dart';
 import 'package:lifely/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:lifely/features/cart/presentation/screens/cart_page.dart';
 

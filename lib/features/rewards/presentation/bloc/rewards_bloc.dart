@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:lifely/features/rewards/data/model/rewards_model.dart';
 import 'package:lifely/features/rewards/domain/entity/rewards.dart';
 import 'package:lifely/features/rewards/domain/usecases/rewards_usecases.dart';
 import 'package:lifely/features/teacher_view/domain/entity/products.dart';
-import 'package:lifely/features/teacher_view/presentation/bloc/products_bloc.dart';
 import 'package:meta/meta.dart';
 
 part 'rewards_event.dart';
@@ -17,6 +15,9 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     on<FetchRewardsEvent>(fetchRewardsEvent);
     on<UpdateRewardsEvent>(updateRewardsEvent);
     on<ResetRewardsEvent>(resetRewardsEvent);
+    on<ProductItemRemovedFromCartButtonPressedEvent>(
+      productItemRemovedFromCartButtonPressedEvent,
+    );
   }
 
   void fetchRewardsEvent(FetchRewardsEvent event, Emitter<RewardsState> emit) {
@@ -53,6 +54,21 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       ifLeft: (failure) => emit(RewardsErrors(message: failure.message)),
       ifRight: (_) {
         emit(ResetRewardsSuccess());
+        add(FetchRewardsEvent());
+      },
+    );
+  }
+
+  FutureOr<void> productItemRemovedFromCartButtonPressedEvent(
+    ProductItemRemovedFromCartButtonPressedEvent event,
+    Emitter<RewardsState> emit,
+  ) async {
+    final result = await rewardsUsecases.updateRewardsAfterRemove(event.coins);
+    print('update rewards bloc -------------------------');
+    result.fold(
+      ifLeft: (failure) => emit(RewardsErrors(message: failure.message)),
+      ifRight: (_) {
+        emit(UpdateRewardsSuccess());
         add(FetchRewardsEvent());
       },
     );

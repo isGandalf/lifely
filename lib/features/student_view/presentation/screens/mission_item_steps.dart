@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lifely/features/notifications/data/models/notification_model.dart';
-import 'package:lifely/features/notifications/data/source/local_notification_service.dart';
 import 'package:lifely/features/student_view/domain/entity/mission.dart';
 import 'package:lifely/features/student_view/presentation/bloc/bloc/mission_bloc.dart';
 import 'package:lifely/l10n/app_localizations.dart';
@@ -113,17 +111,18 @@ class _MissionItemStepsState extends State<MissionItemSteps> {
                     child: ElevatedButton(
                       onPressed: mission.completedSteps == mission.totalSteps
                           ? () {
-                              final title = AppLocalizations.of(
-                                context,
-                              )!.missionCompletedTitle(mission.missionTitle);
+                              // final title = AppLocalizations.of(
+                              //   context,
+                              // )!.missionCompletedTitle(mission.missionTitle);
 
-                              final description = AppLocalizations.of(
-                                context,
-                              )!.missionCompletedDescription;
+                              // final description = AppLocalizations.of(
+                              //   context,
+                              // )!.missionCompletedDescription;
                               context.read<MissionBloc>().add(
                                 MissionSubmitButtonPressedEvent(
-                                  notificationTitle: title,
-                                  notificationDescription: description,
+                                  notificationTitle: mission.missionTitle,
+                                  notificationDescription:
+                                      mission.missionDescription,
                                 ),
                               );
                             }

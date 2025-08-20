@@ -1,14 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:lifely/core/errors/network_errors.dart';
 import 'package:lifely/features/notifications/data/source/local_notification_service.dart';
 import 'package:lifely/features/notifications/domain/entity/notification_entity.dart';
 import 'package:lifely/features/notifications/domain/usecases/notification_usecases.dart';
-import 'package:lifely/features/notifications/presentation/bloc/notification_bloc.dart';
-import 'package:lifely/features/student_view/data/repository/missions_data_repository.dart';
 import 'package:lifely/features/student_view/data/source/network_info.dart';
-import 'package:lifely/features/student_view/data/source/sync_manager.dart';
 import 'package:lifely/features/student_view/domain/entity/mission.dart';
 import 'package:lifely/features/student_view/domain/usecases/mission_usecases.dart';
 import 'package:meta/meta.dart';
@@ -133,6 +129,7 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
     Emitter<MissionState> emit,
   ) async {
     final id = DateTime.now().microsecond;
+
     await localNotificationService.showNotification(
       id: id,
       title: event.notificationTitle,

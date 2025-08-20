@@ -31,4 +31,12 @@ class RewardsUsecases {
       ifRight: (_) => const Right(null),
     );
   }
+
+  Future<Either<RewardsErrors, void>> updateRewardsAfterRemove(int coins) async {
+    final results = await rewardsRepository.updateRewardsAfterRemove(coins);
+    return results.fold(
+      ifLeft: (failure) => Left(RewardsUpdateError(message: failure.message)),
+      ifRight: (_) => const Right(null),
+    );
+  }
 }

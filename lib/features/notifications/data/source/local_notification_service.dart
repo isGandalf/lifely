@@ -1,6 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:lifely/features/notifications/data/models/notification_model.dart';
-import 'package:lifely/features/notifications/domain/entity/notification_entity.dart';
 
 class LocalNotificationService {
   final notificationPlugin = FlutterLocalNotificationsPlugin();
@@ -24,6 +22,28 @@ class LocalNotificationService {
 
     // initialize the plugin
     await notificationPlugin.initialize(initSettings);
+
+    // ✅ Android 13+ requires runtime notification permission
+    final androidPlugin = notificationPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    if (androidPlugin != null) {
+      // create channel
+      const androidChannel = AndroidNotificationChannel(
+        'mission_notification_id',
+        'Mission Notifications',
+        description: 'Mission completion notifications',
+        importance: Importance.max,
+      );
+      await androidPlugin.createNotificationChannel(androidChannel);
+
+      // request permission on Android 13+
+      await androidPlugin.requestNotificationsPermission();
+    }
+
+    _isInitialized = true;
   }
 
   // NOTIFICATIONS SETUP
