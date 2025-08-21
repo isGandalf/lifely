@@ -46,7 +46,8 @@ The student view manages three screens from bottom navigation option – **Home,
 - **On Notifications screen** –  
   - All notifications are triggered only when the user presses the “Submit” button on the “Missions” page.  
   - Notifications are saved locally in English language by default.  
-  - When the app’s language is changed, the notification UI refreshes to display in the selected language only.  
+  - When the app’s language is changed, the notification UI refreshes to display in the selected language only.
+  - Ensure the notifications are allowed in app permissions.
 
 ---
 
