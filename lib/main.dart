@@ -32,6 +32,7 @@ import 'package:lifely/features/student_view/data/source/sync_manager.dart';
 import 'package:lifely/features/student_view/domain/repository/missions_domain_repository.dart';
 import 'package:lifely/features/student_view/domain/usecases/mission_usecases.dart';
 import 'package:lifely/features/student_view/presentation/bloc/bloc/mission_bloc.dart';
+import 'package:lifely/features/student_view/presentation/screens/student_view.dart';
 import 'package:lifely/features/teacher_view/data/model/products_model.dart';
 import 'package:lifely/features/teacher_view/data/repository/products_repository_impl.dart';
 import 'package:lifely/features/teacher_view/data/source/datasources.dart';

@@ -17,10 +17,20 @@ final class MissionStepPressedEvent extends MissionEvent {
 final class MissionSyncEvent extends MissionEvent {}
 
 final class MissionSubmitButtonPressedEvent extends MissionEvent {
+  final String missionTitle;
+  final String missionDescription;
+
+  MissionSubmitButtonPressedEvent({
+    required this.missionTitle,
+    required this.missionDescription,
+  });
+}
+
+final class ShowSystemNotificaitonOnMissionCompleteEvent extends MissionEvent {
   final String notificationTitle;
   final String notificationDescription;
 
-  MissionSubmitButtonPressedEvent({
+  ShowSystemNotificaitonOnMissionCompleteEvent({
     required this.notificationTitle,
     required this.notificationDescription,
   });

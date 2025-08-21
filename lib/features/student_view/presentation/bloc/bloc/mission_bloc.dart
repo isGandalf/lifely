@@ -32,6 +32,9 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
     on<MissionStepPressedEvent>(missionStepPressedEvent);
     on<MissionSyncEvent>(missionSyncEvent);
     on<MissionSubmitButtonPressedEvent>(missionSubmitButtonPressedEvent);
+    on<ShowSystemNotificaitonOnMissionCompleteEvent>(
+      showSystemNotificaitonOnMissionCompleteEvent,
+    );
   }
 
   // Fetch missions from remote
@@ -128,20 +131,10 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
     MissionSubmitButtonPressedEvent event,
     Emitter<MissionState> emit,
   ) async {
-    final id = DateTime.now().microsecond;
-
-    await localNotificationService.showNotification(
-      id: id,
-      title: event.notificationTitle,
-      body: event.notificationDescription,
-    );
-
-    emit(NotificationSentSuccessState());
-
     final notification = NotificationEntity(
       notificationId: DateTime.now().millisecondsSinceEpoch.toString(),
-      notificationTitle: event.notificationTitle,
-      notificationDescription: event.notificationDescription,
+      notificationTitle: event.missionTitle,
+      notificationDescription: event.missionDescription,
       createdAt: DateTime.now(),
       isRead: false,
     );
@@ -158,5 +151,19 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
         add(MissionLoadEvent());
       },
     );
+  }
+
+  // Show notification
+  FutureOr<void> showSystemNotificaitonOnMissionCompleteEvent(
+    ShowSystemNotificaitonOnMissionCompleteEvent event,
+    Emitter<MissionState> emit,
+  ) async {
+    final id = DateTime.now().microsecond;
+    await localNotificationService.showNotification(
+      id: id,
+      title: event.notificationTitle,
+      body: event.notificationDescription,
+    );
+    emit(NotificationSentSuccessState());
   }
 }

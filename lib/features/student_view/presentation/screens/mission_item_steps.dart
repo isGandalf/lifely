@@ -59,45 +59,51 @@ class _MissionItemStepsState extends State<MissionItemSteps> {
                       itemCount: mission.totalSteps,
                       itemBuilder: (context, index) {
                         bool isCompleted = index < completedSteps;
-                        return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isCompleted ? Colors.green : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: isCompleted,
-                                checkColor: Colors.white,
-                                activeColor: isCompleted
-                                    ? Colors.green
-                                    : Colors.white,
-                                onChanged: (value) {
-                                  context.read<MissionBloc>().add(
-                                    MissionStepPressedEvent(
-                                      missionId: widget.missionItem.missionId,
-                                      value: value!,
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: 20),
-                              Text(
-                                'Step ${index + 1}',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: isCompleted
-                                      ? Colors.white
-                                      : Colors.black,
+
+                        void toggleStep(bool newValue) {
+                          context.read<MissionBloc>().add(
+                            MissionStepPressedEvent(
+                              missionId: widget.missionItem.missionId,
+                              value: newValue,
+                            ),
+                          );
+                        }
+
+                        return InkWell(
+                          onTap: () => toggleStep(!isCompleted),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isCompleted ? Colors.green : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: isCompleted,
+                                  checkColor: Colors.white,
+                                  activeColor: isCompleted
+                                      ? Colors.green
+                                      : Colors.white,
+                                  onChanged: (value) => toggleStep(value!),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 20),
+                                Text(
+                                  'Step ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: isCompleted
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -111,17 +117,27 @@ class _MissionItemStepsState extends State<MissionItemSteps> {
                     child: ElevatedButton(
                       onPressed: mission.completedSteps == mission.totalSteps
                           ? () {
-                              // final title = AppLocalizations.of(
-                              //   context,
-                              // )!.missionCompletedTitle(mission.missionTitle);
+                              final title = AppLocalizations.of(
+                                context,
+                              )!.missionCompletedTitle(mission.missionTitle);
 
-                              // final description = AppLocalizations.of(
-                              //   context,
-                              // )!.missionCompletedDescription;
+                              final description = AppLocalizations.of(
+                                context,
+                              )!.missionCompletedDescription;
+
+                              // trigger system notification
+                              context.read<MissionBloc>().add(
+                                ShowSystemNotificaitonOnMissionCompleteEvent(
+                                  notificationTitle: title,
+                                  notificationDescription: description,
+                                ),
+                              );
+
+                              // save notification
                               context.read<MissionBloc>().add(
                                 MissionSubmitButtonPressedEvent(
-                                  notificationTitle: mission.missionTitle,
-                                  notificationDescription:
+                                  missionTitle: mission.missionTitle,
+                                  missionDescription:
                                       mission.missionDescription,
                                 ),
                               );
